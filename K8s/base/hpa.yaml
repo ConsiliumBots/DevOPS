@@ -1,0 +1,18 @@
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: service-search-engine-hpa
+  namespace: cb-micro-services
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    name: deployment-cb-service-search-engine
+    apiVersion: apps/v1
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 40
