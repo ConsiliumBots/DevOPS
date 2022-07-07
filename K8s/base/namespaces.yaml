@@ -4,3 +4,8 @@ kind: Namespace
 metadata:
   name: cb-micro-services
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cb-backends
+---
