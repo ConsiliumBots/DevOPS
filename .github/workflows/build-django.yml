@@ -15,6 +15,16 @@ on:
       SECRET_FILE:
         required: true
         type: string
+    secrets:
+      SLACK_WEBHOOK:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
