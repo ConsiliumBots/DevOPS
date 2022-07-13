@@ -1,0 +1,125 @@
+name: Build to Amazon ECR
+# Controls when the action will run.
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      ECR_REPOSITORY:
+        required: true
+        type: string
+      RELEASE_REVISION:
+        required: true
+        type: string
+
+    secrets:
+      secret_conf:
+        required: true
+
+env:
+  ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
+  SLACK_ICON: "[icon URL]"
+  SLACK_COLOR: '#228B22'
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  MSG_MINIMAL: false
+  SLACK_CHANNEL: github-actions
+  SLACK_USERNAME: 'Dobby'
+  SLACK_FOOTER: 'Powered by Chevron'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-ecr:
+    name: Build ECR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Set git env ${{inputs.ENVIRONMENT}}
+        run: |
+          echo "$SECRET_CONF" > /tmp/mysecrets.txt
+        shell: bash
+        with:
+          SECRET_CONF: ${{secrets.secret_conf}}
+
+      - name: Slack notification Begin
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'Deployment :rocket:'
+          SLACK_MESSAGE: "Begin Build project ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+
+      - name: Obtain GitHub App Installation Access Token
+        id: githubAppAuth
+        run: |
+          GITHUB_TOKEN="$(npx obtain-github-app-installation-access-token ci ${{ secrets.GH_APP_CREDENTIALS_TOKEN }})"
+          echo "::add-mask::$GITHUB_TOKEN"
+          echo "::set-output name=token::$GITHUB_TOKEN"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      - name: Docker cache layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
+      - name: Slack notification Buildx
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'Deployment Buildx :ok_hand:'
+          SLACK_MESSAGE: "Everything looks good on Code project ${{github.repository}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Begining the building and push \n Iniciated by ${{github.actor}}"
+
+      - name: Build & Push Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:${{ inputs.RELEASE_REVISION }}
+          RELEASE_IMAGE_LATEST: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest
+        run: |
+          echo "ENVIRONMENT is ${{inputs.ENVIRONMENT}}"
+          docker buildx create --use
+          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new --build-arg INPUT_LOGDNA_INGESTION_KEY=${{ secrets.LOGDNA_INGESTION_KEY }} --build-arg INPUT_ENVIRONMENT=${{inputs.ENVIRONMENT}} --build-arg INPUT_GITHUB_TOKEN=${{ steps.GithubAppAuth.outputs.token }} --build-arg INPUT_AWS_ACCESS=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg INPUT_AWS_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg INPUT_AWS_REGION=${{ secrets.AWS_REGION }} --secret id=mysecret,src=/tmp/mysecrets.txt -t ${{ env.RELEASE_IMAGE }} -t ${{ env.RELEASE_IMAGE_LATEST }} --push .
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Slack notification Deployment
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'Deployment to ECR :sparkles:'
+          SLACK_MESSAGE: "Push complete \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+
+      - name: Slack ERROR
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'ACTION Error :boom:'
+          SLACK_MESSAGE: "Excuse me Master \n I fail the action ${{github.repository}} \n BAD BAD Dobby \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+          SLACK_COLOR: ${{ job.status }}
