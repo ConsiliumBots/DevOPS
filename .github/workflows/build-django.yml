@@ -12,10 +12,9 @@ on:
       RELEASE_REVISION:
         required: true
         type: string
-
-    secrets:
-      secret_conf:
+      SECRET_FILE:
         required: true
+        type: string
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
@@ -38,12 +37,12 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Set git env ${{inputs.ENVIRONMENT}}
-        run: |
-          echo "$SECRET_CONF" > /tmp/mysecrets.txt
-        shell: bash
-        with:
-          SECRET_CONF: ${{secrets.secret_conf}}
+#      - name: Set git env ${{inputs.ENVIRONMENT}}
+#        run: |
+#          echo "$SECRET_CONF" > /tmp/mysecrets.txt
+#        shell: bash
+#        with:
+#          SECRET_CONF: ${{secrets.secret_conf}}
 
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2
@@ -106,7 +105,7 @@ jobs:
         run: |
           echo "ENVIRONMENT is ${{inputs.ENVIRONMENT}}"
           docker buildx create --use
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new --build-arg INPUT_LOGDNA_INGESTION_KEY=${{ secrets.LOGDNA_INGESTION_KEY }} --build-arg INPUT_ENVIRONMENT=${{inputs.ENVIRONMENT}} --build-arg INPUT_GITHUB_TOKEN=${{ steps.GithubAppAuth.outputs.token }} --build-arg INPUT_AWS_ACCESS=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg INPUT_AWS_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg INPUT_AWS_REGION=${{ secrets.AWS_REGION }} --secret id=mysecret,src=/tmp/mysecrets.txt -t ${{ env.RELEASE_IMAGE }} -t ${{ env.RELEASE_IMAGE_LATEST }} --push .
+          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new --build-arg INPUT_LOGDNA_INGESTION_KEY=${{ secrets.LOGDNA_INGESTION_KEY }} --build-arg INPUT_ENVIRONMENT=${{inputs.ENVIRONMENT}} --build-arg INPUT_GITHUB_TOKEN=${{ steps.GithubAppAuth.outputs.token }} --build-arg INPUT_AWS_ACCESS=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg INPUT_AWS_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg INPUT_AWS_REGION=${{ secrets.AWS_REGION }} --secret id=mysecret,src=${{ inputs.SECRET_FILE }} -t ${{ env.RELEASE_IMAGE }} -t ${{ env.RELEASE_IMAGE_LATEST }} --push .
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
