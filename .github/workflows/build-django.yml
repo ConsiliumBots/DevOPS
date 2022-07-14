@@ -3,7 +3,7 @@ name: Build to Amazon ECR
 on:
   workflow_call:
     inputs:
-      environment:
+      ENVIRONMENT:
         required: true
         type: string
       ECR_REPOSITORY:
@@ -55,7 +55,7 @@ jobs:
 #          SECRET_CONF: ${{secrets.secret_conf}}
       - name: TEST
         run: |
-          echo "ENVIRONMENT -> ${{ inputs.environment }} SECRET_FILE ->${{ inputs.SECRET_FILE }}"
+          echo "ENVIRONMENT -> ${{ inputs.ENVIRONMENT }} SECRET_FILE ->${{ inputs.SECRET_FILE }}"
 
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2
