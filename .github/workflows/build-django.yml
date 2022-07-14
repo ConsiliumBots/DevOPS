@@ -15,15 +15,15 @@ on:
       SECRET_FILE:
         required: true
         type: string
-    secrets:
-      SLACK_WEBHOOK:
-        required: true
-      AWS_ACCESS_KEY_ID:
-        required: true
-      AWS_SECRET_ACCESS_KEY:
-        required: true
-      AWS_REGION:
-        required: true
+#    secrets:
+#      SLACK_WEBHOOK:
+#        required: true
+#      AWS_ACCESS_KEY_ID:
+#        required: true
+#      AWS_SECRET_ACCESS_KEY:
+#        required: true
+#      AWS_REGION:
+#        required: true
 
 
 env:
@@ -70,7 +70,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
@@ -113,7 +113,7 @@ jobs:
           RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:${{ inputs.RELEASE_REVISION }}
           RELEASE_IMAGE_LATEST: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest
         run: |
-          echo "ENVIRONMENT is ${{inputs.ENVIRONMENT}}"
+          echo "ENVIRONMENT -> ${{ inputs.ENVIRONMENT }}"
           docker buildx create --use
           docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new --build-arg INPUT_LOGDNA_INGESTION_KEY=${{ secrets.LOGDNA_INGESTION_KEY }} --build-arg INPUT_ENVIRONMENT=${{inputs.ENVIRONMENT}} --build-arg INPUT_GITHUB_TOKEN=${{ steps.GithubAppAuth.outputs.token }} --build-arg INPUT_AWS_ACCESS=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg INPUT_AWS_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} --build-arg INPUT_AWS_REGION=${{ secrets.AWS_REGION }} --secret id=mysecret,src=${{ inputs.SECRET_FILE }} -t ${{ env.RELEASE_IMAGE }} -t ${{ env.RELEASE_IMAGE_LATEST }} --push .
           rm -rf /tmp/.buildx-cache
