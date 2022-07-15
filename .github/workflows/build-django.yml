@@ -15,6 +15,9 @@ on:
       SECRET_FILE:
         required: true
         type: string
+      SECRET_CONF:
+        required: true
+        type: string
 #    secrets:
 #      SLACK_WEBHOOK:
 #        required: true
@@ -53,10 +56,10 @@ jobs:
 #        shell: bash
 #        with:
 #          SECRET_CONF: ${{secrets.secret_conf}}
-      - name: TEST
+      - name: Create Config Django
         run: |
           echo "ENVIRONMENT -> ${{ inputs.ENVIRONMENT }} SECRET_FILE ->${{ inputs.SECRET_FILE }}"
-
+          echo "${{ inputs.SECRET_CONF }}" > ${{ inputs.SECRET_FILE }}
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2
         env:
