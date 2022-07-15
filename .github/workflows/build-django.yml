@@ -139,3 +139,12 @@ jobs:
           SLACK_TITLE: 'ACTION Error :boom:'
           SLACK_MESSAGE: "Excuse me Master \n I fail the action ${{github.repository}} \n BAD BAD Dobby \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
           SLACK_COLOR: ${{ job.status }}
+
+      - name: Slack Wiiiii
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: ':tada:'
+          SLACK_MESSAGE: "Excuse me Master \n I finish the building of ${{github.repository}} for you \n I will try to deploy it for you \n Iniciated by ${{github.actor}}"
+          SLACK_COLOR: ${{ job.status }}
+
