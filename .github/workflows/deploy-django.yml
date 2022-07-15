@@ -48,7 +48,6 @@ env:
 jobs:
   deploy-eks:
     name: Deploy to EKS
-    needs: [ build-ecr ]
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
