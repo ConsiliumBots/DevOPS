@@ -102,7 +102,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment Buildx :ok_hand:'
-          SLACK_MESSAGE: "Everything looks good Master on your code  ${{github.repository}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Everything looks good on your code Master ${{github.repository}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push \n Iniciated by ${{github.actor}}"
 
       - name: Build & Push Image
         env:
