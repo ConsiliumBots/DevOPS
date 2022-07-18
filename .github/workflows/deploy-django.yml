@@ -75,7 +75,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment to EKS :sparkles:'
-          SLACK_MESSAGE: "Excuse me Master \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
 
       - name: Deploy to Kubernetes cluster
         uses: ConsiliumBots/kubectl-aws-eks@master
@@ -95,14 +95,14 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment to EKS :tada:'
-          SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}}"
 
       - name: Slack ERROR
         if: ${{ failure() }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'ACTION Error :boom:'
-          SLACK_MESSAGE: "Excuse me Master \n I fail the action ${{github.repository}} \n BAD BAD Dobby \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}} / ${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
           SLACK_COLOR: ${{ job.status }}
 
       - name: Slack Wiiiii
@@ -110,5 +110,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: ':tada:'
-          SLACK_MESSAGE: "Excuse me Master \n I finish the deployment of ${{github.repository}} for you \n DOBBY Its FREE \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}} / ${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
           SLACK_COLOR: ${{ job.status }}
