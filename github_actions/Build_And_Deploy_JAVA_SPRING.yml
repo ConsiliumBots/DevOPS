@@ -1,0 +1,100 @@
+name: Deploy to Amazon EKS v2
+on:
+  push:
+    branches: [ CHANGE_ME ]
+  workflow_dispatch:
+
+env:
+  ECR_REPOSITORY: #CHANGE_ME
+  RELEASE_REVISION: ${{ github.sha }}
+  KUBE_NAMESPACE: #CHANGE_ME
+  DEPLOYMENT_NAME: #CHANGE_ME
+  CONTAINER_APP_NAME: #CHANGE_ME
+  ENVIRONMENT: staging
+  SECRET_FILE: /tmp/mysecrets.txt
+
+jobs:
+  define-vars:
+    name: Define Deploy Vars
+    runs-on: ubuntu-latest
+    outputs:
+      ECR_REPOSITORY: ${{ steps.set-output-workflows.outputs.ECR_REPOSITORY }}
+      ENVIRONMENT: ${{ steps.set-output-workflows.outputs.ENVIRONMENT }}
+      RELEASE_REVISION: ${{ steps.set-output-workflows.outputs.RELEASE_REVISION }}
+      SECRET_FILE: ${{ steps.set-output-workflows.outputs.SECRET_FILE }}
+      SECRET_CONF: ${{ steps.set-output-workflows.outputs.SECRET_CONF }}
+      DEPLOYMENT_NAME: ${{ steps.set-output-workflows.outputs.DEPLOYMENT_NAME }}
+      KUBE_NAMESPACE: ${{ steps.set-output-workflows.outputs.KUBE_NAMESPACE }}
+      CONTAINER_APP_NAME: ${{ steps.set-output-workflows.outputs.CONTAINER_APP_NAME }}
+      KUBE_CONFIG_DATA: ${{ steps.set-output-workflows.outputs.KUBE_CONFIG_DATA }}
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.4.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Set env to default
+        run: |
+          echo "KUBE_CONFIG_DATA=KUBE_CONFIG_DATA_STAGING" >> $GITHUB_ENV
+          echo "$SECRET_CONF" | tr -d '[:space:]' > ${{ env.SECRET_FILE }}
+        shell: bash
+        env:
+          SECRET_CONF: ${{secrets.STAGING_SECRET_CONF}}
+
+      - name: Set env to production
+        if: endsWith(github.ref, '/master')
+        run: |
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          echo "KUBE_CONFIG_DATA=KUBE_CONFIG_DATA_PROD" >> $GITHUB_ENV
+          echo "ECR_REPOSITORY=#CHANGE_ME" >> $GITHUB_ENV
+          echo "$SECRET_CONF" | tr -d '[:space:]' > ${{ env.SECRET_FILE }}
+        shell: bash
+        env:
+          SECRET_CONF: ${{secrets.PROD_SECRET_CONF}}
+
+      - name: Clean Secrets
+        run: |
+          MY_STRING=$(base64 -w 0 ${{ env.SECRET_FILE }})
+          echo "MY_CONF=$MY_STRING" >> $GITHUB_ENV
+
+      - name: Set outputs for reusable workflows
+        id: set-output-workflows
+        run: |
+          echo "::set-output name=ECR_REPOSITORY::${{ env.ECR_REPOSITORY }}"
+          echo "::set-output name=ENVIRONMENT::${{ env.ENVIRONMENT }}"
+          echo "::set-output name=RELEASE_REVISION::${{ env.RELEASE_REVISION }}"
+          echo "::set-output name=SECRET_FILE::${{ env.SECRET_FILE }}"
+          echo "::set-output name=SECRET_CONF::${{ env.MY_CONF }}"
+          echo "::set-output name=DEPLOYMENT_NAME::${{ env.DEPLOYMENT_NAME }}"
+          echo "::set-output name=KUBE_NAMESPACE::${{ env.KUBE_NAMESPACE }}"
+          echo "::set-output name=CONTAINER_APP_NAME::${{ env.CONTAINER_APP_NAME }}"
+          echo "::set-output name=KUBE_CONFIG_DATA::${{ env.KUBE_CONFIG_DATA }}"
+
+  build-ecr:
+    needs: [ define-vars ]
+    uses: ConsiliumBots/DevOPS/.github/workflows/build-django.yml@master
+    with:
+      ENVIRONMENT: ${{needs.define-vars.outputs.ENVIRONMENT}}
+      ECR_REPOSITORY: ${{needs.define-vars.outputs.ECR_REPOSITORY}}
+      RELEASE_REVISION: ${{needs.define-vars.outputs.RELEASE_REVISION}}
+      SECRET_CONF: ${{needs.define-vars.outputs.SECRET_CONF}}
+      SECRET_FILE: ${{needs.define-vars.outputs.SECRET_FILE}}
+    secrets: inherit
+
+  deploy-eks:
+    needs: [ define-vars, build-ecr ]
+    uses: ConsiliumBots/DevOPS/.github/workflows/deploy-django.yml@master
+    with:
+      ENVIRONMENT: ${{needs.define-vars.outputs.ENVIRONMENT}}
+      ECR_REPOSITORY: ${{needs.define-vars.outputs.ECR_REPOSITORY}}
+      RELEASE_REVISION: ${{needs.define-vars.outputs.RELEASE_REVISION}}
+      DEPLOYMENT_NAME: ${{needs.define-vars.outputs.DEPLOYMENT_NAME}}
+      KUBE_NAMESPACE: ${{needs.define-vars.outputs.KUBE_NAMESPACE}}
+      CONTAINER_APP_NAME: ${{needs.define-vars.outputs.CONTAINER_APP_NAME}}
+
+    secrets:
+      KUBE_CONFIG_DATA: ${{ secrets[needs.define-vars.outputs.KUBE_CONFIG_DATA] }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}

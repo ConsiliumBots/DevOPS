@@ -2,12 +2,12 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: service-search-engine-hpa
-  namespace: cb-micro-services
+  name: service- #CHANGE_ME
+  namespace: cb-micro-services #CHANGE_ME <cb-micro-services | cb-backends>
 spec:
   scaleTargetRef:
     kind: Deployment
-    name: deployment-cb-service-search-engine
+    name: deployment- #CHANGE_ME
     apiVersion: apps/v1
   minReplicas: 1
   maxReplicas: 5

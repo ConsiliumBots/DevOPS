@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: cb-micro-services
-  name: cb-service-search-engine
+  namespace: cb-micro-services #CHANGE_ME <cb-micro-services | cb-backends>
+  name: #CHANGE_ME
   annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: "nlb-ip"
       service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-      service.beta.kubernetes.io/aws-load-balancer-name: "k8s-priv-staging-serv-search"
+      service.beta.kubernetes.io/aws-load-balancer-name: "k8s-priv-staging-serv-search" #CHANGE_ME
 spec:
   ports:
     - protocol: TCP
@@ -16,5 +16,5 @@ spec:
 
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: cb-service-search-engine
+    app.kubernetes.io/name: #CHANGE_ME
 ---
