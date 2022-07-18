@@ -42,7 +42,7 @@ env:
   MSG_MINIMAL: false
   SLACK_CHANNEL: github-actions
   SLACK_USERNAME: 'Dobby'
-  SLACK_FOOTER: 'Powered by Chevron'
+  SLACK_FOOTER: 'Powered by House of the Elf'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
