@@ -127,7 +127,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'ACTION Error :boom:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }} on ${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
           SLACK_COLOR: ${{ job.status }}
 
       - name: Slack Wiiiii
@@ -135,6 +135,6 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: ':tada:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}} / ${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
           SLACK_COLOR: ${{ job.status }}
 
