@@ -55,7 +55,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment :rocket:'
-          SLACK_MESSAGE: "Begin Build project ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
       - name: Obtain GitHub App Installation Access Token
         id: githubAppAuth
@@ -102,7 +102,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment Buildx :ok_hand:'
-          SLACK_MESSAGE: "Everything looks good on Code project ${{github.repository}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Begining the building and push \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Everything looks good Master on your code  ${{github.repository}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push \n Iniciated by ${{github.actor}}"
 
       - name: Build & Push Image
         env:
@@ -120,7 +120,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment to ECR :sparkles:'
-          SLACK_MESSAGE: "Push complete \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
       - name: Slack ERROR
         if: ${{ failure() }}

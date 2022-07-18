@@ -75,7 +75,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment to EKS :sparkles:'
-          SLACK_MESSAGE: "Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n Begining the Deployment to EKS \n This can take a while :alarm_clock: so got a coffee \n Iniciated by ${{github.actor}}"
+          SLACK_MESSAGE: "Excuse me Master \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee \n Iniciated by ${{github.actor}}"
 
       - name: Deploy to Kubernetes cluster
         uses: ConsiliumBots/kubectl-aws-eks@master
