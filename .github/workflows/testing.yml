@@ -1,0 +1,25 @@
+name: Deploy to Amazon EKS v2
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  SLACK_ICON: "[icon URL]"
+  SLACK_COLOR: '#228B22'
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  MSG_MINIMAL: false
+  SLACK_CHANNEL: github-actions
+  SLACK_USERNAME: 'Dobby'
+  SLACK_FOOTER: ''
+
+jobs:
+  define-vars:
+    name: Define Deploy Vars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack notification Begin
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: 'Deployment :rocket:'
+          SLACK_MESSAGE: "https://i.gifer.com/7Oi3.gif"
