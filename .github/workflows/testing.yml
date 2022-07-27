@@ -22,11 +22,12 @@ jobs:
         uses: archive/github-actions-slack@v2.0.0
         id: notify
         with:
+          slack-optional-as_user: false
+          slack-optional-username: Dobby
           slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
           slack-channel: C02E4CWPDQR
           slack-text: https://i.gifer.com/7Oi3.gif
-          as_user: false
-          username: Dobby
+
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2
         env:
