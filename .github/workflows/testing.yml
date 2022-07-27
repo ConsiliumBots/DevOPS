@@ -22,7 +22,7 @@ jobs:
         uses: archive/github-actions-slack@v2.0.0
         id: notify
         with:
-          slack-bot-user-oauth-access-token: xoxb-539737845650-3862939171476-uBM6b6Bir45RCgJxcr7ihfRf
+          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
           slack-channel: C02E4CWPDQR
           slack-text: Hello! Event "${{ github.event_name }}" in "${{ github.repository }}" 🤓
       - name: Slack notification Begin
