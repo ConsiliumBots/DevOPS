@@ -24,7 +24,7 @@ jobs:
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
           slack-channel: C02E4CWPDQR
-          slack-text: Hello! Event "${{ github.event_name }}" in "${{ github.repository }}" 🤓
+          slack-text: https://i.gifer.com/7Oi3.gif
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2
         env:
