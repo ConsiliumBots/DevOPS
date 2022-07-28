@@ -105,16 +105,16 @@ jobs:
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
           SLACK_COLOR: ${{ job.status }}
 
-      - name: Slack ErrorGif
-        if: ${{ failure() }}
-        uses: archive/github-actions-slack@v2.0.0
-        id: notify-bad
-        with:
-          slack-optional-as_user: false
-          slack-optional-username: Dobby
-          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/7Oi3.gif
+#      - name: Slack ErrorGif
+#        if: ${{ failure() }}
+#        uses: archive/github-actions-slack@v2.0.0
+#        id: notify-bad
+#        with:
+#          slack-optional-as_user: false
+#          slack-optional-username: Dobby
+#          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+#          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+#          slack-text: https://i.gifer.com/7Oi3.gif
 
       - name: Slack Wiiiii
         if: ${{ success() }}
@@ -124,13 +124,13 @@ jobs:
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
           SLACK_COLOR: ${{ job.status }}
 
-      - name: Slack Wiiii
-        if: ${{ success() }}
-        uses: archive/github-actions-slack@v2.0.0
-        id: notify-wiii
-        with:
-          slack-optional-as_user: false
-          slack-optional-username: Dobby
-          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/fr3.gif
+#      - name: Slack Wiiii
+#        if: ${{ success() }}
+#        uses: archive/github-actions-slack@v2.0.0
+#        id: notify-wiii
+#        with:
+#          slack-optional-as_user: false
+#          slack-optional-username: Dobby
+#          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+#          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+#          slack-text: https://i.gifer.com/fr3.gif
