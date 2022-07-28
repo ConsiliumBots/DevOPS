@@ -134,7 +134,7 @@ jobs:
           slack-optional-username: Dobby
           slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
           slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/7Oi3.gif
+          slack-text: https://i.gifer.com/INdX.gif
 
       - name: Slack Wiii
         if: ${{ success() }}
@@ -153,5 +153,5 @@ jobs:
           slack-optional-username: Dobby
           slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
           slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/fr3.gif
+          slack-text: https://i.gifer.com/7Oi8.gif
 
