@@ -2,10 +2,7 @@ name: Test Django
 # Controls when the action will run.
 on:
   workflow_call:
-    inputs:
-    
-    secrets:
-
+  
 env:
   SLACK_ICON: "[icon URL]"
   SLACK_COLOR: '#228B22'
