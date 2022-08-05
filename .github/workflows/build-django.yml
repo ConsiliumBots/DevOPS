@@ -155,3 +155,21 @@ jobs:
           slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
           slack-text: https://i.gifer.com/7Oi8.gif
 
+      - name: Slack Cancel
+        if: ${{ cancelled() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: ':boom:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
+          SLACK_COLOR: ${{ job.status }}
+          
+      - name: Slack CancelGif
+        if: ${{ cancelled() }}
+        uses: archive/github-actions-slack@v2.0.0
+        id: notify-wiii
+        with:
+          slack-optional-as_user: false
+          slack-optional-username: Dobby
+          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+          slack-text: https://i.gifer.com/LHtI.gif
