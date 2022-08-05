@@ -78,7 +78,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: ':tada:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n i will begin the testing ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }}\n"
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n i will begin the testing"
           SLACK_COLOR: ${{ job.status }}
       
       - name: Slack Testing
@@ -100,6 +100,14 @@ jobs:
           TEST_DB_PASS: postgres
           TEST_DB_PORT: 5432
           TEST_DB_USER: postgres
+          
+      - name: Slack Testing Finish
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: ':tada:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n the testing finist fine"
+          SLACK_COLOR: ${{ job.status }}
           
       - name: Slack Wiiii
         if: ${{ success() }}
