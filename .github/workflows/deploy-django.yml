@@ -150,7 +150,7 @@ jobs:
 #      - name: Slack CancelGif
 #        if: ${{ cancelled() }}
 #        uses: archive/github-actions-slack@v2.0.0
-#        id: notify-wiii
+#        id: notify-canceled
 #        with:
 #          slack-optional-as_user: false
 #          slack-optional-username: Dobby
