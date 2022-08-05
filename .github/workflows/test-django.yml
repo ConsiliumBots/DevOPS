@@ -14,7 +14,7 @@ env:
 
 jobs:
   test-django:
-    name: Testing New Version
+    name: Testing Django
     runs-on: ubuntu-latest
     services:
       db_service:
@@ -56,8 +56,8 @@ jobs:
 
       - name: Install basic dependencies
         run: |
-          apt-get update --fix-missing
-          apt-get upgrade -y
+#          apt-get update --fix-missing
+#          apt-get upgrade -y
           apt-get -y install memcached libmemcached-tools libmemcached-dev zlib1g-dev gdal-bin
           python -m pip install --upgrade pip
           python -m pip install --upgrade pipenv
