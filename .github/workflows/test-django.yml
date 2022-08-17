@@ -93,7 +93,7 @@ jobs:
       
       - name: Run test suite
         run: |
-          pipenv run python manage.py test -v 2
+          pipenv run python manage.py test -v 2 --parallel
         env:
           TEST_DB_HOST: localhost
           TEST_DB_NAME: postgres
