@@ -75,7 +75,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         
-        
       - name: Slack notification Deployment
         uses: rtCamp/action-slack-notify@v2
         env:
