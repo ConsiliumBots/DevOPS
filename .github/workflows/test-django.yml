@@ -17,7 +17,7 @@ jobs:
     name: Testing Django
     runs-on: ubuntu-latest
     services:
-      postgres:
+      db_service:
         image: postgis/postgis
         env:
           POSTGRES_USER: postgres
