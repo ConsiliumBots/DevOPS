@@ -95,7 +95,7 @@ jobs:
         run: |
           pipenv run python manage.py test -v 2 --parallel
         env:
-          TEST_DB_HOST: localhost
+          TEST_DB_HOST: db_service
           TEST_DB_NAME: postgres
           TEST_DB_PASS: postgres
           TEST_DB_PORT: 5432
