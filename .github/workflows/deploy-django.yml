@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.4.1
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
 
@@ -76,7 +76,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         
       - name: Slack notification Deployment
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'Deployment to EKS :sparkles:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
@@ -96,14 +96,14 @@ jobs:
           args: rollout status deployment ${{ inputs.DEPLOYMENT_NAME }} -n ${{ inputs.KUBE_NAMESPACE }}
 
       - name: Slack notification Finish
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'Deployment to EKS :tada:'
           SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}}"
 
       - name: Slack ERROR
         if: ${{ failure() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'ACTION Error :boom:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
@@ -122,7 +122,7 @@ jobs:
 
       - name: Slack Wiiiii
         if: ${{ success() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: ':tada:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
@@ -141,7 +141,7 @@ jobs:
 
       - name: Slack Cancel
         if: ${{ cancelled() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: ':boom:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"

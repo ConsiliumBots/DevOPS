@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.4.1
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
 
@@ -47,7 +47,7 @@ jobs:
           echo "${{ inputs.SECRET_CONF }}" > /tmp/tmp_conf.txt
           base64 -d /tmp/tmp_conf.txt > ${{ inputs.SECRET_FILE }}
       - name: Slack notification Begin
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'Deployment :rocket:'
           SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4.3.0
         with:
           python-version: 3.9
 
@@ -94,7 +94,7 @@ jobs:
             ${{ runner.os }}-single-buildx
 
       - name: Slack notification Buildx
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'Deployment Buildx :ok_hand:'
           SLACK_MESSAGE: "Everything looks good on your code Master ${{inputs.ECR_REPOSITORY}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push"
@@ -112,14 +112,14 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Slack notification Deployment
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'Deployment to ECR :sparkles:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}}"
 
       - name: Slack ERROR
         if: ${{ failure() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: 'ACTION Error :boom:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
@@ -138,7 +138,7 @@ jobs:
 
       - name: Slack Wiii
         if: ${{ success() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: ':tada:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
@@ -157,7 +157,7 @@ jobs:
 
       - name: Slack Cancel
         if: ${{ cancelled() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_TITLE: ':boom:'
           SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
