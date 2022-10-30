@@ -1,0 +1,126 @@
+name: Deploy to Amazon EKS
+# Controls when the action will run.
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      ECR_REPOSITORY:
+        required: true
+        type: string
+      KUBE_NAMESPACE:
+        required: true
+        type: string
+      DEPLOYMENT_NAME:
+        required: true
+        type: string
+      CONTAINER_APP_NAME:
+        required: true
+        type: string
+      RELEASE_REVISION:
+        required: true
+        type: string
+
+    secrets:
+      KUBE_CONFIG_DATA:
+        required: true
+      SLACK_WEBHOOK:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+      BOT_SLACK_CHANNEL:
+        required: false
+      BOT_SLACK_TOKEN:
+        required: false
+
+env:
+  ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
+  SLACK_ICON: "[icon URL]"
+  SLACK_COLOR: '#228B22'
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  MSG_MINIMAL: false
+  SLACK_CHANNEL: github-actions
+  SLACK_USERNAME: 'Dobby'
+  SLACK_FOOTER: 'Powered by House of the Elf'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-eks:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Set env to ${{inputs.ENVIRONMENT}}
+        run: |
+          echo "KUBE_CONFIG_DATA=${{ secrets.KUBE_CONFIG_DATA }}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        
+      - name: Slack notification Deployment
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'Deployment to EKS :sparkles:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
+
+      - name: Deploy to Kubernetes cluster
+        uses: ConsiliumBots/kubectl-aws-eks@master
+        env:
+          RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:${{ inputs.RELEASE_REVISION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          args: set image deployment/${{ inputs.DEPLOYMENT_NAME }} ${{ inputs.CONTAINER_APP_NAME }}=${{ env.RELEASE_IMAGE }} -n ${{ inputs.KUBE_NAMESPACE }}
+
+      - name: Verify Kubernetes deployment
+        uses: ConsiliumBots/kubectl-aws-eks@master
+        with:
+          args: rollout status deployment ${{ inputs.DEPLOYMENT_NAME }} -n ${{ inputs.KUBE_NAMESPACE }}
+
+      - name: Slack notification Finish
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'Deployment to EKS :tada:'
+          SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}}"
+
+      - name: Slack ERROR
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'ACTION Error :boom:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
+          SLACK_COLOR: ${{ job.status }}
+
+      - name: Slack Wiiiii
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: ':tada:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
+          SLACK_COLOR: ${{ job.status }}
+
+      - name: Slack Cancel
+        if: ${{ cancelled() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: ':boom:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
+          SLACK_COLOR: ${{ job.status }}
