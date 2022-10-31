@@ -38,6 +38,7 @@ jobs:
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
+          SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
           SLACK_TITLE: 'Deployment :rocket:'
           SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
