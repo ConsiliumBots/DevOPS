@@ -13,6 +13,10 @@ on:
         required: true
         type: string
 
+    secrets:
+      SLACK_WEBHOOK:
+        required: true
+
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
   SLACK_ICON: "[icon URL]"
