@@ -38,11 +38,11 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Slack notification Begin
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'Deployment :rocket:'
-          SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+#      - name: Slack notification Begin
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'Deployment :rocket:'
+#          SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
       - name: Obtain GitHub App Installation Access Token
         id: githubAppAuth
@@ -103,65 +103,65 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: Slack notification Deployment
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'Deployment to ECR :sparkles:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}}"
-
-      - name: Slack ERROR
-        if: ${{ failure() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'ACTION Error :boom:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
-          SLACK_COLOR: ${{ job.status }}
-
-      - name: Slack ErrorGif
-        if: ${{ failure() }}
-        uses: archive/github-actions-slack@v2.0.0
-        id: notify-bad
-        with:
-          slack-optional-as_user: false
-          slack-optional-username: Dobby
-          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/INdX.gif
-
-      - name: Slack Wiii
-        if: ${{ success() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: ':tada:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
-          SLACK_COLOR: ${{ job.status }}
-
-      - name: Slack Wiiii
-        if: ${{ success() }}
-        uses: archive/github-actions-slack@v2.0.0
-        id: notify-wiii
-        with:
-          slack-optional-as_user: false
-          slack-optional-username: Dobby
-          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/7Oi8.gif
-
-      - name: Slack Cancel
-        if: ${{ cancelled() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: ':boom:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
-          SLACK_COLOR: ${{ job.status }}
-          
-      - name: Slack CancelGif
-        if: ${{ cancelled() }}
-        uses: archive/github-actions-slack@v2.0.0
-        id: notify-canceled
-        with:
-          slack-optional-as_user: false
-          slack-optional-username: Dobby
-          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-          slack-text: https://i.gifer.com/LHtI.gif
+#      - name: Slack notification Deployment
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'Deployment to ECR :sparkles:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}}"
+#
+#      - name: Slack ERROR
+#        if: ${{ failure() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'ACTION Error :boom:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
+#          SLACK_COLOR: ${{ job.status }}
+#
+#      - name: Slack ErrorGif
+#        if: ${{ failure() }}
+#        uses: archive/github-actions-slack@v2.0.0
+#        id: notify-bad
+#        with:
+#          slack-optional-as_user: false
+#          slack-optional-username: Dobby
+#          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+#          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+#          slack-text: https://i.gifer.com/INdX.gif
+#
+#      - name: Slack Wiii
+#        if: ${{ success() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: ':tada:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
+#          SLACK_COLOR: ${{ job.status }}
+#
+#      - name: Slack Wiiii
+#        if: ${{ success() }}
+#        uses: archive/github-actions-slack@v2.0.0
+#        id: notify-wiii
+#        with:
+#          slack-optional-as_user: false
+#          slack-optional-username: Dobby
+#          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+#          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+#          slack-text: https://i.gifer.com/7Oi8.gif
+#
+#      - name: Slack Cancel
+#        if: ${{ cancelled() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: ':boom:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
+#          SLACK_COLOR: ${{ job.status }}
+#
+#      - name: Slack CancelGif
+#        if: ${{ cancelled() }}
+#        uses: archive/github-actions-slack@v2.0.0
+#        id: notify-canceled
+#        with:
+#          slack-optional-as_user: false
+#          slack-optional-username: Dobby
+#          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+#          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+#          slack-text: https://i.gifer.com/LHtI.gif
