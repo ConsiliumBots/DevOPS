@@ -83,7 +83,7 @@ jobs:
             ${{ runner.os }}-single-buildx
 
       - name: Slack notification Buildx
-        uses: rtCamp/action-slack-notify@v2.2.0
+        uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: 'Deployment Buildx :ok_hand:'
           SLACK_MESSAGE: "Everything looks good on your code Master ${{inputs.ECR_REPOSITORY}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push"
