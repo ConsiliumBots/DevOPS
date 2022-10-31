@@ -12,6 +12,9 @@ on:
       RELEASE_REVISION:
         required: true
         type: string
+      SLACK_WEBHOOK:
+        required: true
+        type: string
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
