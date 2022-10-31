@@ -28,8 +28,6 @@ on:
         required: false
       BOT_SLACK_TOKEN:
         required: false
-      GH_APP_CREDENTIALS_TOKEN:
-        required: false
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
@@ -40,6 +38,7 @@ env:
   SLACK_CHANNEL: github-actions
   SLACK_USERNAME: 'Dobby'
   SLACK_FOOTER: 'Powered by the House of the Elf'
+  GH_APP_CREDENTIALS_TOKEN: ${{secretsGH_APP_CREDENTIALS_TOKEN}}
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
