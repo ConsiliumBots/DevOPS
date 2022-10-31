@@ -38,6 +38,7 @@ jobs:
       - name: Slack notification Begin
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: 'Deployment :rocket:'
           SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
@@ -85,7 +86,6 @@ jobs:
       - name: Slack notification Buildx
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: 'Deployment Buildx :ok_hand:'
           SLACK_MESSAGE: "Everything looks good on your code Master ${{inputs.ECR_REPOSITORY}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push"
 
