@@ -12,9 +12,22 @@ on:
       RELEASE_REVISION:
         required: true
         type: string
+
+    secrets:
+      KUBE_CONFIG_DATA:
+        required: false
       SLACK_WEBHOOK:
-        required: true
-        type: string
+        required: false
+      AWS_ACCESS_KEY_ID:
+        required: false
+      AWS_SECRET_ACCESS_KEY:
+        required: false
+      AWS_REGION:
+        required: false
+      BOT_SLACK_CHANNEL:
+        required: false
+      BOT_SLACK_TOKEN:
+        required: false
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
@@ -38,11 +51,11 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-#      - name: Slack notification Begin
-#        uses: rtCamp/action-slack-notify@v2.2.0
-#        env:
-#          SLACK_TITLE: 'Deployment :rocket:'
-#          SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
+      - name: Slack notification Begin
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'Deployment :rocket:'
+          SLACK_MESSAGE: "Excuse me Master \n I will begin the building of ${{github.repository}} \n Branch to deploy -> ${{github.ref}} \n Iniciated by ${{github.actor}}"
 
       - name: Obtain GitHub App Installation Access Token
         id: githubAppAuth
