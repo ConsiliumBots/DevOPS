@@ -28,6 +28,8 @@ on:
         required: false
       BOT_SLACK_TOKEN:
         required: false
+      GH_APP_CREDENTIALS_TOKEN:
+        required: false
 
 env:
   ECR_REGISTRY: 037742176437.dkr.ecr.us-east-1.amazonaws.com
