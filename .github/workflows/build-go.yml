@@ -38,7 +38,7 @@ env:
   SLACK_CHANNEL: github-actions
   SLACK_USERNAME: 'Dobby'
   SLACK_FOOTER: 'Powered by the House of the Elf'
-  GH_APP_CREDENTIALS_TOKEN: ${{secretsGH_APP_CREDENTIALS_TOKEN}}
+  GH_APP_CREDENTIALS_TOKEN: ${{secrets.GH_APP_CREDENTIALS_TOKEN}}
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
