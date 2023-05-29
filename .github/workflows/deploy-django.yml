@@ -82,7 +82,7 @@ jobs:
 #          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
 
       - name: Deploy to Kubernetes cluster
-        uses: ConsiliumBots/kubectl-aws-eks@v1.1.0
+        uses: ConsiliumBots/kubectl-aws-eks@1.1.0
         env:
           RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:${{ inputs.RELEASE_REVISION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -91,7 +91,7 @@ jobs:
           args: set image deployment/${{ inputs.DEPLOYMENT_NAME }} ${{ inputs.CONTAINER_APP_NAME }}=${{ env.RELEASE_IMAGE }} -n ${{ inputs.KUBE_NAMESPACE }}
 
       - name: Verify Kubernetes deployment
-        uses: ConsiliumBots/kubectl-aws-eks@v1.1.0
+        uses: ConsiliumBots/kubectl-aws-eks@1.1.0
         with:
           args: rollout status deployment ${{ inputs.DEPLOYMENT_NAME }} -n ${{ inputs.KUBE_NAMESPACE }}
 
