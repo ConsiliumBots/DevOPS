@@ -49,9 +49,8 @@ jobs:
         if: github.event.inputs.SECRET_CONF_ENCRIPTED==''
         run: |
           echo "ENVIRONMENT -> ${{ inputs.ENVIRONMENT }} SECRET_FILE -> ${{ inputs.SECRET_FILE }}"
-          echo "${{ inputs.SECRET_CONF }}" > /tmp/tmp_conf.txt
-          base64 -d /tmp/tmp_conf.txt > ${{ inputs.SECRET_FILE }}
-
+          echo "${{ inputs.SECRET_CONF }}" > ${{ inputs.SECRET_FILE }}
+          
       - name: Create Config Django from Encripted
         if: github.event.inputs.SECRET_CONF_ENCRIPTED!=''
         run: |
@@ -76,7 +75,7 @@ jobs:
           echo "::set-output name=token::$GITHUB_TOKEN"
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4.3.0
@@ -84,7 +83,7 @@ jobs:
           python-version: 3.9
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2.1.0
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -102,18 +101,18 @@ jobs:
         uses: docker/setup-buildx-action@master
 
       - name: Docker cache layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-single-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-single-buildx
 
-      #- name: Slack notification Buildx
-      #  uses: rtCamp/action-slack-notify@v2.2.0
-      #  env:
-      #    SLACK_TITLE: 'Deployment Buildx :ok_hand:'
-      #    SLACK_MESSAGE: "Everything looks good on your code Master ${{inputs.ECR_REPOSITORY}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push"
+      - name: Slack notification Buildx
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'Deployment Buildx :ok_hand:'
+          SLACK_MESSAGE: "Everything looks good on your code Master ${{inputs.ECR_REPOSITORY}} :ok_hand: \n Branch to deploy -> ${{github.ref}} \n Starting the building and push"
 
       - name: Build & Push Image
         env:
@@ -127,65 +126,65 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      #- name: Slack notification Deployment
-      #  uses: rtCamp/action-slack-notify@v2.2.0
-      #  env:
-      #    SLACK_TITLE: 'Deployment to ECR :sparkles:'
-      #    SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}}"
+      - name: Slack notification Deployment
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'Deployment to ECR :sparkles:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I Push your docker \n Repository ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}}"
 
-      #- name: Slack ERROR
-      #  if: ${{ failure() }}
-      #  uses: rtCamp/action-slack-notify@v2.2.0
-      #  env:
-      #    SLACK_TITLE: 'ACTION Error :boom:'
-      #    SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
-      #    SLACK_COLOR: ${{ job.status }}
+      - name: Slack ERROR
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: 'ACTION Error :boom:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{ inputs.ECR_REPOSITORY }}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
+          SLACK_COLOR: ${{ job.status }}
 
-      #- name: Slack ErrorGif
-      #  if: ${{ failure() }}
-      #  uses: archive/github-actions-slack@v2.0.0
-      #  id: notify-bad
-      #  with:
-      #    slack-optional-as_user: false
-      #    slack-optional-username: Dobby
-      #    slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-      #    slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-      #    slack-text: https://i.gifer.com/INdX.gif
+      - name: Slack ErrorGif
+        if: ${{ failure() }}
+        uses: archive/github-actions-slack@v2.6.0
+        id: notify-bad
+        with:
+          slack-optional-as_user: false
+          slack-optional-username: Dobby
+          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+          slack-text: https://i.gifer.com/INdX.gif
 
-      #- name: Slack Wiii
-      #  if: ${{ success() }}
-      #  uses: rtCamp/action-slack-notify@v2.2.0
-      #  env:
-      #    SLACK_TITLE: ':tada:'
-      #    SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
-      #    SLACK_COLOR: ${{ job.status }}
+      - name: Slack Wiii
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: ':tada:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the building of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n I will try to deploy it for you"
+          SLACK_COLOR: ${{ job.status }}
 
-      #- name: Slack Wiiii
-      #  if: ${{ success() }}
-      #  uses: archive/github-actions-slack@v2.0.0
-      #  id: notify-wiii
-      #  with:
-      #    slack-optional-as_user: false
-      #    slack-optional-username: Dobby
-      #    slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-      #    slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-      #    slack-text: https://i.gifer.com/7Oi8.gif
+      - name: Slack Wiiii
+        if: ${{ success() }}
+        uses: archive/github-actions-slack@v2.6.0
+        id: notify-wiii
+        with:
+          slack-optional-as_user: false
+          slack-optional-username: Dobby
+          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+          slack-text: https://i.gifer.com/7Oi8.gif
 
-      #- name: Slack Cancel
-      #  if: ${{ cancelled() }}
-      #  uses: rtCamp/action-slack-notify@v2.2.0
-      #  env:
-      #    SLACK_TITLE: ':boom:'
-      #    SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
-      #    SLACK_COLOR: ${{ job.status }}
+      - name: Slack Cancel
+        if: ${{ cancelled() }}
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_TITLE: ':boom:'
+          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
+          SLACK_COLOR: ${{ job.status }}
           
-      #- name: Slack CancelGif
-      #  if: ${{ cancelled() }}
-      #  uses: archive/github-actions-slack@v2.0.0
-      #  id: notify-canceled
-      #  with:
-      #    slack-optional-as_user: false
-      #    slack-optional-username: Dobby
-      #    slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
-      #    slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
-      #    slack-text: https://i.gifer.com/LHtI.gif
+      - name: Slack CancelGif
+        if: ${{ cancelled() }}
+        uses: archive/github-actions-slack@v2.6.0
+        id: notify-canceled
+        with:
+          slack-optional-as_user: false
+          slack-optional-username: Dobby
+          slack-bot-user-oauth-access-token: ${{ secrets.BOT_SLACK_TOKEN }}
+          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
+          slack-text: https://i.gifer.com/LHtI.gif
