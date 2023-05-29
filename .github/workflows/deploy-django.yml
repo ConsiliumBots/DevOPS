@@ -75,11 +75,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         
-      - name: Slack notification Deployment
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'Deployment to EKS :sparkles:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
+#      - name: Slack notification Deployment
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'Deployment to EKS :sparkles:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I will deploy your code \n ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ECR_REPOSITORY }}:latest \n Branch to deploy -> ${{github.ref}} \n This can take a while :alarm_clock: so i bring you a coffee :coffee:"
 
       - name: Deploy to Kubernetes cluster
         uses: ConsiliumBots/kubectl-aws-eks@master
@@ -95,19 +95,19 @@ jobs:
         with:
           args: rollout status deployment ${{ inputs.DEPLOYMENT_NAME }} -n ${{ inputs.KUBE_NAMESPACE }}
 
-      - name: Slack notification Finish
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'Deployment to EKS :tada:'
-          SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}}"
+#      - name: Slack notification Finish
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'Deployment to EKS :tada:'
+#          SLACK_MESSAGE: "Deployment complete \n Finished the Deployment to EKS :confetti_ball: \n Branch to deploy -> ${{github.ref}}"
 
-      - name: Slack ERROR
-        if: ${{ failure() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: 'ACTION Error :boom:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
-          SLACK_COLOR: ${{ job.status }}
+#      - name: Slack ERROR
+#        if: ${{ failure() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: 'ACTION Error :boom:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I fail the action ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n BAD BAD Dobby"
+#          SLACK_COLOR: ${{ job.status }}
 
 #      - name: Slack ErrorGif
 #        if: ${{ failure() }}
@@ -120,13 +120,13 @@ jobs:
 #          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
 #          slack-text: https://i.gifer.com/7Oi3.gif
 
-      - name: Slack Wiiiii
-        if: ${{ success() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: ':tada:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
-          SLACK_COLOR: ${{ job.status }}
+#      - name: Slack Wiiiii
+#        if: ${{ success() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: ':tada:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n I finish the deployment of ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} for you \n DOBBY Its FREE"
+#          SLACK_COLOR: ${{ job.status }}
 
 #      - name: Slack Wiiii
 #        if: ${{ success() }}
@@ -139,13 +139,13 @@ jobs:
 #          slack-channel: ${{ secrets.BOT_SLACK_CHANNEL }}
 #          slack-text: https://i.gifer.com/fr3.gif
 
-      - name: Slack Cancel
-        if: ${{ cancelled() }}
-        uses: rtCamp/action-slack-notify@v2.2.0
-        env:
-          SLACK_TITLE: ':boom:'
-          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
-          SLACK_COLOR: ${{ job.status }}
+#      - name: Slack Cancel
+#        if: ${{ cancelled() }}
+#        uses: rtCamp/action-slack-notify@v2.2.0
+#        env:
+#          SLACK_TITLE: ':boom:'
+#          SLACK_MESSAGE: "Excuse me Master ${{github.actor}} \n you cancel my action on ${{inputs.ECR_REPOSITORY}}/${{ inputs.ENVIRONMENT }} \n DOBBY do something wrong??"
+#          SLACK_COLOR: ${{ job.status }}
           
 #      - name: Slack CancelGif
 #        if: ${{ cancelled() }}
